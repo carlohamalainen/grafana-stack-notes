@@ -49,7 +49,9 @@ $ curl -G -s  "http://localhost:3100/loki/api/v1/labels" | jq
 Query a Loki instance, filter on a key/value in the json:
 
 ```
-curl -s -G "http://localhost:3100/loki/api/v1/query_range" --data-urlencode 'query={job="onpremlogs"} | json |= `"key with spaces": "so silly"`' --data-urlencode 'since=48h'  | jq
+curl -s -G "http://localhost:3100/loki/api/v1/query_range" \
+  --data-urlencode 'query={job="onpremlogs"} | json |= `"key with spaces": "so silly"`' \
+  --data-urlencode 'since=48h'  | jq
 {
   "status": "success",
   "data": {
@@ -88,7 +90,9 @@ curl -s -G "http://localhost:3100/loki/api/v1/query_range" --data-urlencode 'que
 Find a string anywhere in the json:
 
 ```
-$ curl -s -G "http://localhost:3100/loki/api/v1/query_range" --data-urlencode 'query={job="onpremlogs"} | json |= "so silly"' --data-urlencode 'since=48h'  | jq
+$ curl -s -G "http://localhost:3100/loki/api/v1/query_range" \
+  --data-urlencode 'query={job="onpremlogs"} | json |= "so silly"' \
+  --data-urlencode 'since=48h'  | jq
 {
   "status": "success",
   "data": {
@@ -118,7 +122,9 @@ $ curl -s -G "http://localhost:3100/loki/api/v1/query_range" --data-urlencode 'q
 Use a regex to match the value in a field, must end with "silly":
 
 ```
-curl -s -G "http://localhost:3100/loki/api/v1/query_range" --data-urlencode 'query={job="onpremlogs"} | json |~ `"key with spaces": ".*silly"`' --data-urlencode 'since=48h'  | jq
+curl -s -G "http://localhost:3100/loki/api/v1/query_range" \
+  --data-urlencode 'query={job="onpremlogs"} | json |~ `"key with spaces": ".*silly"`' \
+  --data-urlencode 'since=48h'  | jq
 {
   "status": "success",
   "data": {
