@@ -34,6 +34,16 @@ TODO
 
 ## Loki
 
+Loki has a REST API for queries. 
+
+The query language is LogQL: https://megamorf.gitlab.io/cheat-sheets/loki/
+
+A malformed query string will often result in the bewildering error 
+["Invalid Numeric Literal" on colon following a single-quoted string (incorrect parser error message)](https://github.com/jqlang/jq/issues/501)
+from curl (it uses jq under the hood?).
+
+Examples below show how to quote strings, regexes, etc.
+
 ```bash
 $ curl -G -s  "http://localhost:3100/loki/api/v1/labels" | jq
 {
