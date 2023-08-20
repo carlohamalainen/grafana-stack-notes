@@ -290,6 +290,18 @@ Notes on json parsing: https://community.grafana.com/t/i-cant-for-the-life-of-me
 
 # TODO
 
+## Super-large fields in json
+
+e.g. a serialised binary in base64, make sure can still query for existance
+
+## Schema changes
+
+Query with field of different type - compare to ELK user experience.
+
+## Log rotation
+
+How to avoid re-ingesting rotated logs.
+
 ## Old logs
 
 Set maximum old log to ingest?
