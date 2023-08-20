@@ -1,0 +1,9 @@
+{"level":"info","timestamp":"2023-08-19T05:04:05.000000","caller":"zap/main.go:42","message":"new line 88888"}
+{"level":"info","timestamp":"2023-08-19T05:05:05.000000","caller":"zap/main.go:42","message":"new line 99999"}
+{"level":"info","timestamp":"2023-08-19T07:05:05.000000","caller":"zap/main.go:42","message":"new line 00011"}
+{"level":"info","timestamp":"2023-08-18T15:04:05.000000","caller":"zap/main.go:42","message":"new line 22222"}
+{"level":"info","timestamp":"2023-08-19T07:05:05.000000","caller":"zap/main.go:42","message":"new line 22222"}
+{"level":"info","timestamp":"2023-08-19T11:05:05.000000","caller":"zap/main.go:42","message":"new line 3"}
+{"level":"info","timestamp":"2023-08-19T11:05:06.333000","caller":"zap/main.go:42","message":"new line 444444"}
+{"level":"info","timestamp":"2023-08-19T11:08:06.333000","caller":"zap/main.go:42","message":"new line 55", "some.other.crap": "error oh my gawd"}
+{"level":"info","timestamp":"2023-08-20T01:08:06.333000","caller":"zap/main.go:42","message":"new line 55", "key with spaces": "so silly"}

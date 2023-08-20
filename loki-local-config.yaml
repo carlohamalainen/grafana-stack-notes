@@ -1,0 +1,46 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /tmp/loki
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+schema_config:
+  configs:
+  - from: 2022-08-19
+    store: cassandra
+    schema: v11
+    index:
+      prefix: index_
+      period: 168h
+    chunks:
+      prefix: chunk_
+      period: 168h
+
+storage_config:
+  cassandra:
+    addresses: 127.0.0.1
+    auth: false
+    keyspace: lokiindex
+    replication_factor: 1 # just testing on a single host
+
+ruler:
+  alertmanager_url: http://localhost:9093
+
+# on-prem is firewalled anyway
+analytics:
+ reporting_enabled: false
