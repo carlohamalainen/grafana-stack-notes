@@ -34,6 +34,10 @@ TODO
 
 ## Loki
 
+Best practices: https://grafana.com/docs/loki/latest/best-practices/
+
+Essential settings (2021 blog post): https://grafana.com/blog/2021/02/16/the-essential-config-settings-you-should-use-so-you-wont-drop-logs-in-loki/
+
 Loki has a REST API for queries. 
 
 The query language is LogQL: https://megamorf.gitlab.io/cheat-sheets/loki/
@@ -161,7 +165,11 @@ curl -s -G "http://localhost:3100/loki/api/v1/query_range" \
     ],
 ```
 
+Query over a long range of time: https://grafana.com/docs/loki/latest/api/#query-loki-over-a-range-of-time
+
 ## Promtail
+
+View metrics - e.g. dropped logs: http://localhost:9080/metrics
 
 Dry run to verify Promtail log parsing:
 
