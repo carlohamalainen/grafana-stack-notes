@@ -33,4 +33,4 @@ scrape_configs:
       - localhost
     labels:
       job: onpremlogs
-      __path__: /scratch/onpremsystemlogs/*.log
+      __path__: /scratch/onpremsystemlogs/foo*.log

@@ -12,6 +12,20 @@ common:
     kvstore:
       store: inmemory
 
+# not sure if this is necessary
+# ingester:
+#   max_chunk_age: 72h
+#
+# limits_config:
+#   retention_period: 336h
+#   reject_old_samples: false
+#   reject_old_samples_max_age: 43800h
+
+limits_config:
+  reject_old_samples: false
+  reject_old_samples_max_age: 90d
+  max_query_length: 0h # Default: 721h
+
 query_range:
   results_cache:
     cache:
@@ -21,15 +35,15 @@ query_range:
 
 schema_config:
   configs:
-  - from: 2022-08-19
+  - from: 2020-08-19
     store: cassandra
     schema: v11
     index:
       prefix: index_
-      period: 168h
+      period: 90d # 168h
     chunks:
       prefix: chunk_
-      period: 168h
+      period: 90d # 168h
 
 storage_config:
   cassandra:
