@@ -30,7 +30,9 @@ All log lines need a ``message``.
 
 ## Cassandra
 
-TODO
+https://www.ecyrd.com/cassandracalculator/
+
+https://www.baeldung.com/cassandra-cluster-datacenters-racks-nodes
 
 ## Loki
 
