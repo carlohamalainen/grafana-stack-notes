@@ -33,17 +33,53 @@ query_range:
         enabled: true
         max_size_mb: 100
 
+# Cassandra
+# schema_config:
+#   configs:
+#   - from: 2020-08-19
+#     store: cassandra
+#     schema: v11
+#     index:
+#       prefix: index_
+#       period: 90d # 168h
+#     chunks:
+#       prefix: chunk_
+#       period: 90d # 168h
+#
+# storage_config:
+#   cassandra:
+#     addresses: 127.0.0.1
+#     auth: false
+#     keyspace: lokiindex
+#     replication_factor: 1 # just testing on a single host
+
+# /Cassandra
+
+
+
+# MinIO
+# https://github.com/grafana/loki/issues/1434
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /tmp/loki/boltdb-shipper-active
+    cache_location: /tmp/loki/boltdb-shipper-cache
+    cache_ttl: 24h         # Can be increased for faster performance over longer query periods, uses more disk space
+    shared_store: s3
+  aws:
+    endpoint: http://localhost:9000
+    s3: http://admin:password@localhost:9000/loki
+    region: null
+    s3forcepathstyle: true
+
 schema_config:
   configs:
-  - from: 2020-08-19
-    store: cassandra
-    schema: v11
-    index:
-      prefix: index_
-      period: 90d # 168h
-    chunks:
-      prefix: chunk_
-      period: 90d # 168h
+    - from: 2020-07-01
+      store: boltdb-shipper
+      object_store: aws
+      schema: v11
+      index:
+        prefix: index_
+        period: 90d # 168h
 
 storage_config:
   cassandra:
