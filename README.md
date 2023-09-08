@@ -18,14 +18,45 @@ All log lines need a ``message``.
 # Cassandra 4.1.3
 ./bin/cassandra -f
 
+# MinIO
+
+Obviously don't use this user/pass in prod.
+
+```bash
+export MINIO_ROOT_USER=minioroot
+export MINIO_ROOT_PASSWORD=minioroot
+
+export DATA_DIR=`pwd`/minio-data
+
+rm -frv $DATA_DIR
+./minio server $DATA_DIR --console-address ":9001"
+```
+
+When MinIO is up, create the bucket for Loki:
+
+```bash
+export MINIO_ROOT_USER=minioroot
+export MINIO_ROOT_PASSWORD=minioroot
+
+export MINIO_BUCKET="loki"
+
+./mc config host add localminio http://localhost:9000 $MINIO_ROOT_PASSWORD $MINIO_ROOT_PASSWORD
+
+./mc rm -r --dangerous --force localminio/$MINIO_BUCKET
+./mc rb    --dangerous --force localminio/$MINIO_BUCKET
+./mc mb                        localminio/$MINIO_BUCKET
+```
+
+TODO: replication, extra hosts, hot-hot configuration.
+
 # Loki. Need to use table-manager otherwise it won't create tables in Cassandra
-./loki-linux-amd64 -config.file=loki-local-config.yaml -target=all,table-manager 
+./loki-linux-amd64 -config.file=loki-local-config.yaml -target=all,table-manager
 
 # Promtail
 ./promtail-linux-amd64 -config.file=promtail-local-config.yaml
 
-# 10.0.0 
-./bin/grafana-server 
+# 10.0.0
+./bin/grafana-server
 ```
 
 ## Cassandra
@@ -40,11 +71,11 @@ Best practices: https://grafana.com/docs/loki/latest/best-practices/
 
 Essential settings (2021 blog post): https://grafana.com/blog/2021/02/16/the-essential-config-settings-you-should-use-so-you-wont-drop-logs-in-loki/
 
-Loki has a REST API for queries. 
+Loki has a REST API for queries.
 
 The query language is LogQL: https://megamorf.gitlab.io/cheat-sheets/loki/
 
-A malformed query string will often result in the bewildering error 
+A malformed query string will often result in the bewildering error
 ["Invalid Numeric Literal" on colon following a single-quoted string (incorrect parser error message)](https://github.com/jqlang/jq/issues/501)
 from curl (it uses jq under the hood?).
 
@@ -209,83 +240,83 @@ tenant_id: ""
 drop_rate_limited_batches: false
 stream_lag_labels: ""
 
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.913648252 +0800 +08
 	+: 2023-08-19 05:04:05 +0000 UTC
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.913649841 +0800 +08
 	+: 2023-08-19 05:05:05 +0000 UTC
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
 2023-08-19T05:04:05+0000	{__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}	{"level":"info","timestamp":"2023-08-19T05:04:05.000000","caller":"zap/main.go:42","message":"new line 88888"}
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
 2023-08-19T05:05:05+0000	{__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}	{"level":"info","timestamp":"2023-08-19T05:05:05.000000","caller":"zap/main.go:42","message":"new line 99999"}
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.913653217 +0800 +08
 	+: 2023-08-19 07:05:05 +0000 UTC
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.913657839 +0800 +08
 	+: 2023-08-18 15:04:05 +0000 UTC
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
 2023-08-19T07:05:05+0000	{__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}	{"level":"info","timestamp":"2023-08-19T07:05:05.000000","caller":"zap/main.go:42","message":"new line 00011"}
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
 2023-08-18T15:04:05+0000	{__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}	{"level":"info","timestamp":"2023-08-18T15:04:05.000000","caller":"zap/main.go:42","message":"new line 22222"}
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.913761712 +0800 +08
 	+: 2023-08-19 07:05:05 +0000 UTC
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.914551298 +0800 +08
 	+: 2023-08-19 11:05:05 +0000 UTC
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
 2023-08-19T07:05:05+0000	{__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}	{"level":"info","timestamp":"2023-08-19T07:05:05.000000","caller":"zap/main.go:42","message":"new line 22222"}
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
 2023-08-19T11:05:05+0000	{__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}	{"level":"info","timestamp":"2023-08-19T11:05:05.000000","caller":"zap/main.go:42","message":"new line 3"}
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.915649056 +0800 +08
 	+: 2023-08-19 11:05:06.333 +0000 UTC
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.916032552 +0800 +08
 	+: 2023-08-19 11:08:06.333 +0000 UTC
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
 2023-08-19T11:05:06.333+0000	{__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}	{"level":"info","timestamp":"2023-08-19T11:05:06.333000","caller":"zap/main.go:42","message":"new line 444444"}
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
 2023-08-19T11:08:06.333+0000	{__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}	{"level":"info","timestamp":"2023-08-19T11:08:06.333000","caller":"zap/main.go:42","message":"new line 55", "some.other.crap": "error oh my gawd"}
-[inspect: timestamp stage]: 
+[inspect: timestamp stage]:
 {stages.Entry}.Entry.Entry.Timestamp:
 	-: 2023-08-20 09:48:14.916438338 +0800 +08
 	+: 2023-08-20 01:08:06.333 +0000 UTC
-[inspect: labels stage]: 
+[inspect: labels stage]:
 {stages.Entry}.Entry.Labels:
 	-: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs"}
 	+: {__path__="/scratch/onpremsystemlogs/*.log", job="onpremlogs", level="info"}
@@ -297,6 +328,14 @@ Can see the timestamps being parse. Should not see a red ``none`` line for the t
 Promtail timestamp formats are the known Go formats: https://pkg.go.dev/time
 
 Notes on json parsing: https://community.grafana.com/t/i-cant-for-the-life-of-me-figure-out-how-to-parse-json-timestamp-in-promtail-config-yml/76504/2
+
+## Tempo
+
+https://grafana.com/docs/tempo/latest/setup/linux/
+
+https://grafana.com/docs/tempo/latest/setup/
+
+https://github.com/grafana/tempo/releases/
 
 # TODO
 
@@ -324,11 +363,11 @@ https://github.com/grafana/loki/issues/5928#issuecomment-1102485160
 
 Adjust TMP for Loki, Promtail too?
 
-## Retension policy
+## Retention policy
 
 (Using "index" as I would in an ELK stack.)
 
-How to see size of "indexes"? 
+How to see size of "indexes"?
 
 How to dump table sizes in Cassandra?
 
@@ -349,10 +388,10 @@ https://grafana.com/docs/loki/latest/best-practices/
 Short answer, no, it should not.
 
 > In Loki 1.6.0 and newer the logcli series command added the --analyze-labels flag specifically for debugging high cardinality labels:
-> 
+>
 > Total Streams:  25017
 > Unique Labels:  8
-> 
+>
 > Label Name  Unique Values  Found In Streams
 > requestId   24653          24979
 > logStream   1194           25016
@@ -362,9 +401,9 @@ Short answer, no, it should not.
 > source      1              25016
 > transport   1              25017
 > format      1              25017
-> 
+>
 > In this example you can see the requestId label had a 24653 different values out of 24979 streams it was found in, this is bad!!
-> 
+>
 > This is a perfect example of something which should not be a label, requestId should be removed as a label and instead filter expressions should be used to query logs for a specific requestId. For example if requestId is found in the log line as a key=value pair you could write a query like this: {logGroup="group1"} |= "requestId=32422355"
 
 

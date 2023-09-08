@@ -21,10 +21,17 @@ common:
 #   reject_old_samples: false
 #   reject_old_samples_max_age: 43800h
 
+# https://community.grafana.com/t/grafana-loki-log-retention-period/85618
+compactor:
+  retention_enabled: true
+  shared_store: s3 
+
 limits_config:
   reject_old_samples: false
   reject_old_samples_max_age: 90d
   max_query_length: 0h # Default: 721h
+
+  retention_period: 90d
 
 query_range:
   results_cache:
@@ -67,7 +74,7 @@ storage_config:
     shared_store: s3
   aws:
     endpoint: http://localhost:9000
-    s3: http://admin:password@localhost:9000/loki
+    s3: http://minioroot:minioroot@localhost:9000/loki
     region: null
     s3forcepathstyle: true
 
@@ -79,15 +86,9 @@ schema_config:
       schema: v11
       index:
         prefix: index_
-        period: 90d # 168h
+        period: 24h
 
-storage_config:
-  cassandra:
-    addresses: 127.0.0.1
-    auth: false
-    keyspace: lokiindex
-    replication_factor: 1 # just testing on a single host
-
+# Not enabled anyway?
 ruler:
   alertmanager_url: http://localhost:9093
 

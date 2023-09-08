@@ -1,0 +1,44 @@
+# https://grafana.com/docs/tempo/latest/setup/linux/
+
+server:
+  http_listen_port: 3200
+
+# Yes, this is really everything to enable a Zipkin-compatible listener on port 9411.
+distributor:
+  receivers:
+    zipkin:
+
+compactor:
+  compaction:
+    block_retention: 48h # FIXME need this to be longer
+
+ingester:
+  max_block_duration: 1m               # cut the headblock when this much time passes. this is being set for demo purposes and should probably be left alone normally
+
+# Local disk storage:
+#
+# storage:
+#   trace:
+#     backend: local
+#     local:
+#       path: /tmp/tempo/blocks
+#     wal:
+#       path: /tmp/tempo/wal
+
+storage:
+  trace:
+    backend: s3
+    s3:
+      bucket: tempo
+      endpoint: localhost:9000
+      insecure: true
+      access_key: "miniorootAccessKey"
+      secret_key: "totallySecretKey@123"
+    wal:
+      path: /tmp/tempo/wal         # where to store the the wal locally
+
+    # Why define this if we're using s3 for traces?
+    # local:
+    #   path: /tmp/tempo/blocks
+overrides:
+  metrics_generator_processors: [service-graphs, span-metrics]
